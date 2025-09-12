@@ -314,33 +314,40 @@ if __name__ == "__main__":
             )
 
         else:
+            # console.log(
+            #     "Number density in this bin is zero, no data. Setting error on alpha to effectively infinite (disregard constraints on any parameters in this bin)."
+            # )
             console.log(
-                "Number density in this bin is zero, no data. Setting error on alpha to effectively infinite (disregard constraints on any parameters in this bin)."
+                "Number density in this bin is zero, no data (disregard constraints on any parameters in this bin). z: %.2f"
+                % (cosmo.z[iz])
             )
             erralpha[iz] = 1.0e30
-            # " {0:.2f}     {1:.4f}    {2:.3f}         -          {4:.1f}         -         {6:.1f}         -          -".format(
-            txt = " {0:.2f}    {1:.4f}     {2:.3f}       {3:.2f}         {4:.1f}       {5:.2f}        {6:.1f}       {7:.2f}       {8:.3f}".format(
-                cosmo.z[iz],
-                cosmo.volume[iz] / 1e9,
-                means[0],
-                errs[0],
-                means[1],
-                errs[1],
-                means[2],
-                errs[2],
-                erralpha[iz],
-            )
-            if not pardict.as_bool("beta_phi_fixed"):
-                txt = txt + "       {0:.2f}".format(errs[3])
-            if not pardict.as_bool("geff_fixed") and not pardict.as_bool(
-                "beta_phi_fixed"
-            ):
-                txt = txt + "       {0:.2f}".format(errs[4])
-            elif not pardict.as_bool("geff_fixed") and pardict.as_bool(
-                "beta_phi_fixed"
-            ):
-                txt = txt + "       {0:.2f}".format(errs[3])
-            console.log(txt)
+            # means = np.array(
+            #     [cosmo.f[iz] * cosmo.sigma8[iz], cosmo.da[iz], cosmo.h[iz]]
+            # )
+            # # " {0:.2f}     {1:.4f}    {2:.3f}         -          {4:.1f}         -         {6:.1f}         -          -".format(
+            # txt = " {0:.2f}    {1:.4f}     {2:.3f}       {3:.2f}         {4:.1f}       {5:.2f}        {6:.1f}       {7:.2f}       {8:.3f}".format(
+            #     cosmo.z[iz],
+            #     cosmo.volume[iz] / 1e9,
+            #     means[0],
+            #     errs[0],
+            #     means[1],
+            #     errs[1],
+            #     means[2],
+            #     errs[2],
+            #     erralpha[iz],
+            # )
+            # if not pardict.as_bool("beta_phi_fixed"):
+            #     txt = txt + "       {0:.2f}".format(errs[3])
+            # if not pardict.as_bool("geff_fixed") and not pardict.as_bool(
+            #     "beta_phi_fixed"
+            # ):
+            #     txt = txt + "       {0:.2f}".format(errs[4])
+            # elif not pardict.as_bool("geff_fixed") and pardict.as_bool(
+            #     "beta_phi_fixed"
+            # ):
+            #     txt = txt + "       {0:.2f}".format(errs[3])
+            # console.log(txt)
 
     # Combine the Fisher matrices
     cosmo = CosmoResults(
@@ -422,6 +429,10 @@ if __name__ == "__main__":
     # print(np.sqrt(np.diag(np.linalg.inv(FullCatchsmall[-3:, -3:]))))
     # print(np.sqrt(np.diag(np.linalg.inv(FullCatchsmall[-2:, -2:]))))
     # print(np.sqrt(np.sqrt(1.0/FullCatchsmall[-1, -1])))
+    # print(np.sqrt(covFull[-1,-1]))
+    # vectest = np.zeros((len(covFull)))
+    # vectest[-1] = 3.0
+    # print(vectest.T @ FullCatchsmall @ vectest)
 
     J = np.array([2.0 / 3.0, 1.0 / 3.0])
     erralpha = None
@@ -524,6 +535,10 @@ if __name__ == "__main__":
         # get the forecasts for fsigma8, beta_phi, geff
 
         cov_main = np.linalg.inv(fisher_main)
+
+        # print(np.sqrt(cov_main[-1,-1]))
+        # print(np.sqrt(np.diag(cov_main)))
+        # exit()
 
         means_main = np.array(
             [
